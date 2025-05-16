@@ -102,7 +102,7 @@ cl <- crass_gbif1 %>%
 
 ## 7. Visualização geográfica
 
-Mapas das ocorrências com base em coordenadas.
+Mapas das ocorrências com base em coordenadas UTM.
 
 ```{r}
 # Mapa com bordas simples
