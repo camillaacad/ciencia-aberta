@@ -126,8 +126,31 @@ ggplot() +
   labs(x = "Longitude", y = "Latitude", title = expression(italic("Eichhornia crassipes")))
 ```
 
-## 8. Considerações
+## 8. Gráfico dinâmico
 
-A análise concentrou-se nos dados do GBIF, com foco na validação espacial. OBIS não foi considerado neste relatório por se tratar de um ambiente aquático específico.
+O mapa interativo permite que o usuário possa investigar com maior detalher os dados apresentados no mapa.
+
+```{r}
+library(tidyverse)
+library(rgbif)
+
+# ocorrencias
+crass_gbif1 <- occ_data(scientificName = "Eichhornia crassipes", 
+                      hasCoordinate = TRUE,
+                      hasGeospatialIssue = FALSE)
+# checar issues
+issues_gbif <- crass_gbif1$data$issues %>% 
+  unique() %>% 
+  strsplit(., "[,]") %>% 
+  unlist()
+
+gbif_issues() %>% 
+  data.frame() %>% 
+  filter(code %in% issues_gbif)
+```
+
+## 9. Considerações
+
+A análise concentrou-se nos dados do GBIF, com foco na validação espacial. OBIS não foi considerado neste relatório por se tratar de um ambiente aquático oceânico.
 
 ---
