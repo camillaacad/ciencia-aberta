@@ -9,10 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Camilla Soares da Silva" />
 
 <meta name="date" content="2025-05-16" />
 
-<title>index</title>
+<title>Atividade 4 - Análise de Ocorrências - Eichhornia crassipes</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,37 +350,883 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">index</h1>
+<h1 class="title toc-ignore">Atividade 4 - Análise de Ocorrências -
+<em>Eichhornia crassipes</em></h1>
+<h4 class="author">Camilla Soares da Silva</h4>
 <h4 class="date">2025-05-16</h4>
 
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting
-syntax for authoring HTML, PDF, and MS Word documents. For more details
-on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be
-generated that includes both content as well as the output of any
-embedded R code chunks within the document. You can embed an R code
-chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<div id="obtenção-de-dados-do-gbif" class="section level2">
+<h2>1. Obtenção de dados do GBIF</h2>
+<p>Consulta à função <code>occ_data</code> para obtenção de registros
+com coordenadas e sem problemas geoespaciais.</p>
+<pre class="r"><code># Checar a função
+?occ_data
+
+# Baixar ocorrências
+crass_gbif &lt;- occ_data(scientificName = &quot;Eichhornia crassipes&quot;, 
+                       hasCoordinate = TRUE,
+                       hasGeospatialIssue = FALSE)</code></pre>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img role="img" src="data:image/png;base64,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" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the
-code chunk to prevent printing of the R code that generated the
-plot.</p>
+<div id="estrutura-dos-dados" class="section level2">
+<h2>2. Estrutura dos dados</h2>
+<p>Verificação das dimensões e campos disponíveis.</p>
+<pre class="r"><code>dim(crass_gbif)</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>dim(crass_gbif$data)</code></pre>
+<pre><code>## [1] 500 169</code></pre>
+<pre class="r"><code>names(crass_gbif$data)</code></pre>
+<pre><code>##   [1] &quot;key&quot;                                &quot;scientificName&quot;                    
+##   [3] &quot;decimalLatitude&quot;                    &quot;decimalLongitude&quot;                  
+##   [5] &quot;issues&quot;                             &quot;datasetKey&quot;                        
+##   [7] &quot;publishingOrgKey&quot;                   &quot;installationKey&quot;                   
+##   [9] &quot;hostingOrganizationKey&quot;             &quot;publishingCountry&quot;                 
+##  [11] &quot;protocol&quot;                           &quot;lastCrawled&quot;                       
+##  [13] &quot;lastParsed&quot;                         &quot;crawlId&quot;                           
+##  [15] &quot;basisOfRecord&quot;                      &quot;occurrenceStatus&quot;                  
+##  [17] &quot;sex&quot;                                &quot;taxonKey&quot;                          
+##  [19] &quot;kingdomKey&quot;                         &quot;phylumKey&quot;                         
+##  [21] &quot;classKey&quot;                           &quot;orderKey&quot;                          
+##  [23] &quot;familyKey&quot;                          &quot;genusKey&quot;                          
+##  [25] &quot;speciesKey&quot;                         &quot;acceptedTaxonKey&quot;                  
+##  [27] &quot;acceptedScientificName&quot;             &quot;kingdom&quot;                           
+##  [29] &quot;phylum&quot;                             &quot;order&quot;                             
+##  [31] &quot;family&quot;                             &quot;genus&quot;                             
+##  [33] &quot;species&quot;                            &quot;genericName&quot;                       
+##  [35] &quot;specificEpithet&quot;                    &quot;taxonRank&quot;                         
+##  [37] &quot;taxonomicStatus&quot;                    &quot;iucnRedListCategory&quot;               
+##  [39] &quot;dateIdentified&quot;                     &quot;elevation&quot;                         
+##  [41] &quot;elevationAccuracy&quot;                  &quot;continent&quot;                         
+##  [43] &quot;stateProvince&quot;                      &quot;year&quot;                              
+##  [45] &quot;month&quot;                              &quot;day&quot;                               
+##  [47] &quot;eventDate&quot;                          &quot;startDayOfYear&quot;                    
+##  [49] &quot;endDayOfYear&quot;                       &quot;modified&quot;                          
+##  [51] &quot;lastInterpreted&quot;                    &quot;references&quot;                        
+##  [53] &quot;license&quot;                            &quot;isSequenced&quot;                       
+##  [55] &quot;isInCluster&quot;                        &quot;recordedBy&quot;                        
+##  [57] &quot;identifiedBy&quot;                       &quot;dnaSequenceID&quot;                     
+##  [59] &quot;geodeticDatum&quot;                      &quot;class&quot;                             
+##  [61] &quot;countryCode&quot;                        &quot;gbifRegion&quot;                        
+##  [63] &quot;country&quot;                            &quot;publishedByGbifRegion&quot;             
+##  [65] &quot;rightsHolder&quot;                       &quot;recordNumber&quot;                      
+##  [67] &quot;identifier&quot;                         &quot;locality&quot;                          
+##  [69] &quot;municipality&quot;                       &quot;collectionCode&quot;                    
+##  [71] &quot;gbifID&quot;                             &quot;occurrenceID&quot;                      
+##  [73] &quot;catalogNumber&quot;                      &quot;institutionCode&quot;                   
+##  [75] &quot;ownerInstitutionCode&quot;               &quot;occurrenceRemarks&quot;                 
+##  [77] &quot;collectionID&quot;                       &quot;coordinateUncertaintyInMeters&quot;     
+##  [79] &quot;individualCount&quot;                    &quot;lifeStage&quot;                         
+##  [81] &quot;samplingProtocol&quot;                   &quot;vernacularName&quot;                    
+##  [83] &quot;habitat&quot;                            &quot;eventTime&quot;                         
+##  [85] &quot;identificationVerificationStatus&quot;   &quot;eventType&quot;                         
+##  [87] &quot;institutionKey&quot;                     &quot;organismName&quot;                      
+##  [89] &quot;verbatimLocality&quot;                   &quot;higherClassification&quot;              
+##  [91] &quot;taxonID&quot;                            &quot;identificationID&quot;                  
+##  [93] &quot;dataGeneralizations&quot;                &quot;dynamicProperties&quot;                 
+##  [95] &quot;georeferenceProtocol&quot;               &quot;associatedReferences&quot;              
+##  [97] &quot;county&quot;                             &quot;georeferenceRemarks&quot;               
+##  [99] &quot;language&quot;                           &quot;bibliographicCitation&quot;             
+## [101] &quot;higherGeography&quot;                    &quot;georeferencedDate&quot;                 
+## [103] &quot;preparations&quot;                       &quot;networkKeys&quot;                       
+## [105] &quot;collectionKey&quot;                      &quot;otherCatalogNumbers&quot;               
+## [107] &quot;verbatimEventDate&quot;                  &quot;datasetName&quot;                       
+## [109] &quot;institutionID&quot;                      &quot;type&quot;                              
+## [111] &quot;nomenclaturalStatus&quot;                &quot;nomenclaturalCode&quot;                 
+## [113] &quot;fieldNumber&quot;                        &quot;waterBody&quot;                         
+## [115] &quot;organismQuantity&quot;                   &quot;organismQuantityType&quot;              
+## [117] &quot;sampleSizeUnit&quot;                     &quot;sampleSizeValue&quot;                   
+## [119] &quot;identificationReferences&quot;           &quot;eventID&quot;                           
+## [121] &quot;acceptedNameUsage&quot;                  &quot;verbatimCoordinateSystem&quot;          
+## [123] &quot;verbatimIdentification&quot;             &quot;vitality&quot;                          
+## [125] &quot;coordinatePrecision&quot;                &quot;georeferencedBy&quot;                   
+## [127] &quot;footprintWKT&quot;                       &quot;pointRadiusSpatialFit&quot;             
+## [129] &quot;footprintSRS&quot;                       &quot;locationID&quot;                        
+## [131] &quot;footprintSpatialFit&quot;                &quot;georeferenceSources&quot;               
+## [133] &quot;taxonConceptID&quot;                     &quot;reproductiveCondition&quot;             
+## [135] &quot;verbatimSRS&quot;                        &quot;eventRemarks&quot;                      
+## [137] &quot;materialSampleID&quot;                   &quot;taxonRemarks&quot;                      
+## [139] &quot;locationRemarks&quot;                    &quot;fieldNotes&quot;                        
+## [141] &quot;parentEventID&quot;                      &quot;projectId&quot;                         
+## [143] &quot;establishmentMeans&quot;                 &quot;islandGroup&quot;                       
+## [145] &quot;island&quot;                             &quot;identificationRemarks&quot;             
+## [147] &quot;samplingEffort&quot;                     &quot;verbatimElevation&quot;                 
+## [149] &quot;programmeAcronym&quot;                   &quot;nameAccordingTo&quot;                   
+## [151] &quot;depth&quot;                              &quot;verbatimDepth&quot;                     
+## [153] &quot;organismRemarks&quot;                    &quot;locationAccordingTo&quot;               
+## [155] &quot;depthAccuracy&quot;                      &quot;http://unknown.org/recordID&quot;       
+## [157] &quot;rights&quot;                             &quot;http://unknown.org/recordEnteredBy&quot;
+## [159] &quot;datasetID&quot;                          &quot;http://unknown.org/language&quot;       
+## [161] &quot;originalNameUsage&quot;                  &quot;distanceFromCentroidInMeters&quot;      
+## [163] &quot;informationWithheld&quot;                &quot;accessRights&quot;                      
+## [165] &quot;name&quot;                               &quot;identificationQualifier&quot;           
+## [167] &quot;acceptedNameUsageID&quot;                &quot;georeferenceVerificationStatus&quot;    
+## [169] &quot;parentNameUsage&quot;</code></pre>
+</div>
+<div id="verificação-de-problemas-reportados" class="section level2">
+<h2>3. Verificação de problemas reportados</h2>
+<p>Identificação de problemas associados às ocorrências.</p>
+<pre class="r"><code>issues_gbif &lt;- crass_gbif$data$issues %&gt;% 
+  unique() %&gt;% 
+  strsplit(., &quot;[,]&quot;) %&gt;% 
+  unlist()
+
+gbif_issues() %&gt;% 
+  data.frame() %&gt;% 
+  filter(code %in% issues_gbif)</code></pre>
+<pre><code>##         code                                            issue
+## 1        cdc               CONTINENT_DERIVED_FROM_COORDINATES
+## 2    cdround                               COORDINATE_ROUNDED
+## 3       cudc                 COUNTRY_DERIVED_FROM_COORDINATES
+## 4        cum                                 COUNTRY_MISMATCH
+## 5     gass84                     GEODETIC_DATUM_ASSUMED_WGS84
+## 6    iddativ                          IDENTIFIED_DATE_INVALID
+## 7     rdativ                            RECORDED_DATE_INVALID
+## 8   txmatfuz                                TAXON_MATCH_FUZZY
+## 9  typstativ                              TYPE_STATUS_INVALID
+## 10     osiic OCCURRENCE_STATUS_INFERRED_FROM_INDIVIDUAL_COUNT
+## 11       osu                     OCCURRENCE_STATUS_UNPARSABLE
+## 12   colmafu                           COLLECTION_MATCH_FUZZY
+## 13   colmano                            COLLECTION_MATCH_NONE
+## 14   incomis                  INSTITUTION_COLLECTION_MISMATCH
+## 15    inmafu                          INSTITUTION_MATCH_FUZZY
+## 16    inmano                           INSTITUTION_MATCH_NONE
+## 17   diffown                      DIFFERENT_OWNER_INSTITUTION
+##                                                                                                                                                              description
+## 1                                                                            The interpreted continent is based on the coordinates, not the verbatim string information.
+## 2                                                                                                                Original coordinate modified by rounding to 5 decimals.
+## 3                                                                              The interpreted country is based on the coordinates, not the verbatim string information.
+## 4                                                                                         Interpreted country for dwc:country and dwc:countryCode contradict each other.
+## 5                               Indicating that the interpreted coordinates assume they are based on WGS84 datum as the datum was either not indicated or interpretable.
+## 6                                                                                       The date given for dwc:dateIdentified is invalid and cant be interpreted at all.
+## 7                                                                               A (partial) invalid date is given, such as a non existing date, invalid zero month, etc.
+## 8                                                                                    Matching to the taxonomic backbone can only be done using a fuzzy, non exact match.
+## 9                                                               The given type status is impossible to interpret or seriously different from the recommended vocabulary.
+## 10                                                                                                        Occurrence status was inferred from the individual count value
+## 11                                                                                                         Occurrence status value can&#39;t be assigned to OccurrenceStatus
+## 12                                                                                                   The given collection was fuzzily matched to a GrSciColl collection.
+## 13                                                                                               The given collection couldn&#39;t be matched with any GrSciColl collection.
+## 14                                                                                                     The collection matched doesn&#39;t belong to the institution matched.
+## 15                                                                                                 The given institution was fuzzily matched to a GrSciColl institution.
+## 16                                                                                             The given institution couldn&#39;t be matched with any GrSciColl institution.
+## 17 The given owner institution is different than the given institution. Therefore we assume it doesn&#39;t belong to the institution and we don&#39;t link it to the occurrence.
+##          type
+## 1  occurrence
+## 2  occurrence
+## 3  occurrence
+## 4  occurrence
+## 5  occurrence
+## 6  occurrence
+## 7  occurrence
+## 8  occurrence
+## 9  occurrence
+## 10 occurrence
+## 11 occurrence
+## 12 occurrence
+## 13 occurrence
+## 14 occurrence
+## 15 occurrence
+## 16 occurrence
+## 17 occurrence</code></pre>
+</div>
+<div id="seleção-de-variáveis-úteis" class="section level2">
+<h2>4. Seleção de variáveis úteis</h2>
+<p>Filtragem das variáveis relevantes para validação.</p>
+<pre class="r"><code>crass_gbif1 &lt;- crass_gbif$data %&gt;%
+  dplyr::select(scientificName, acceptedScientificName, decimalLatitude, decimalLongitude,
+                issues, waterBody, basisOfRecord, occurrenceStatus, rightsHolder, 
+                datasetName, recordedBy, depth, locality, habitat)</code></pre>
+</div>
+<div id="validação-de-dados" class="section level2">
+<h2>5. Validação de dados</h2>
+<p>Remoção de duplicatas e checagem de níveis únicos.</p>
+<pre class="r"><code>crass_gbif1 &lt;- crass_gbif1 %&gt;% distinct()
+dim(crass_gbif1)</code></pre>
+<pre><code>## [1] 357  14</code></pre>
+<pre class="r"><code>lapply(crass_gbif1, unique)</code></pre>
+<pre><code>## $scientificName
+## [1] &quot;Eichhornia crassipes (Mart.) Solms&quot;
+## 
+## $acceptedScientificName
+## [1] &quot;Pontederia crassipes Mart.&quot;
+## 
+## $decimalLatitude
+##   [1]  -9.325575  18.033831  38.760845  38.861452  38.751484 -29.357806
+##   [7]  20.255062  27.576460  52.300000 -27.748055  29.784258  30.004040
+##  [13]  43.353550  43.353570  13.530000  -6.675452  14.332470  -6.911500
+##  [19]  28.166908  12.588987  40.524139  40.451344 -18.996389  -7.211667
+##  [25]  10.104710  -0.150204 -18.894722   7.192784   7.177762   7.185632
+##  [31]   7.158736  22.579500  19.218307 -22.937222  23.505100  39.068462
+##  [37]   3.922060   4.420064  25.317500  38.657310 -20.136667   6.157636
+##  [43]   6.163191  -6.855887  -6.816861  13.354200   0.161854  35.954101
+##  [49]  19.913400  19.915247 -10.922778  26.723960  26.726030  26.788160
+##  [55]  26.768150  26.713160 -12.250000  20.114000  20.072000  25.678848
+##  [61]   7.250355   7.255657  10.415500   7.311631   7.308634   7.307746
+##  [67]   7.217697   7.300332 -24.356667  28.071700   7.483750   7.510739
+##  [73]   7.480964   7.400421   7.406081   7.417134   7.413307   7.248549
+##  [79]   7.357347   7.424720   7.305374   7.332062  10.808503   9.863590
+##  [85]   4.790750   9.600588  26.989000   7.250960   7.250189   7.517916
+##  [91]   7.505318   7.515343   7.470516   7.304536   7.418678   7.354111
+##  [97]   7.361243   7.357627 -11.450000  -7.222528  50.000146   4.705250
+## [103]   4.705080   4.705130   4.705160   4.705220  40.475474  23.142711
+## [109]  23.217991  23.156826  37.791110   4.731860  40.526170  52.250000
+## [115]  40.088770  37.420240 -11.840833  40.725520  13.298615  13.298650
+## [121]  21.781380  22.787500  14.359261   7.036419  -2.889361   7.097467
+## [127]   7.092300  30.370616  28.152000   4.600230  30.774440 -10.921944
+## [133]  24.113870  24.022710   4.648550  41.463540  42.171689  16.130350
+## [139]   7.374329   7.406851   7.389381   7.379871  24.110510  24.838100
+## [145]  24.797028  24.747125  24.788800  50.988370   4.576250   2.416889
+## [151]  43.066820  -7.606475  23.467602  23.463018  23.496493  23.384910
+## [157]  10.505992   4.678660  43.066740  43.066880  43.066870  43.066900
+## [163]  43.066970  43.066940  40.729600   7.076831  49.993633  50.260531
+## [169]  13.472602   6.984636   7.022008  10.252481  11.132767  11.131896
+## [175]  11.133334  11.060152  11.060650  35.125889  33.376530  12.559936
+## [181]   7.260497   7.260444  13.951110   7.108359   5.613775   7.351567
+## [187]  10.961740  49.990710   5.246956   5.250266   6.095484  13.459185
+## [193]   6.309966   7.107668   7.084854   6.983166   7.079218  24.229750
+## [199]  11.951049  11.474641  27.026400  21.931984  -2.527028   0.542324
+## [205]  26.991179 -29.168889  52.100000  24.112050  23.987420   4.449287
+## [211]   9.806397   9.744108  43.092050  -4.782650  -4.783940  -4.783640
+## [217]   9.947688  10.244449  43.057080  42.159310  41.233410  42.159420
+## [223] -23.556030   8.895029  10.240298  10.746828  35.209366  29.551628
+## [229]   8.977815  15.139393 -11.765000   4.720021   4.674367   8.701171
+## [235]  29.658510  38.884566  38.878889 -21.044480  39.346753 -19.639167
+## [241] -29.313939 -17.874971   6.291300   8.931010   5.173557   5.370260
+## [247]  11.158265   5.183260   5.371492  41.939662  16.283490   4.202750
+## [253]  39.301331   4.652180   4.660910   4.663910   4.670400   4.683290
+## [259]   5.207967   5.408243  21.043102  35.723333   5.014889   5.209132
+## [265]   5.449599  -1.935720  -1.387110  -1.944850  -1.478230  -2.412600
+## [271]  -2.217000  -2.075360  -2.207070  -2.228140  13.668870   5.264261
+## [277]   5.034139   5.466623  53.200000  38.756341  38.969180  25.143524
+## [283]   5.269701   5.055950   5.861675  52.950000  19.899139  40.576358
+## [289]  40.449809  38.946601  -3.264167   5.285491   5.073797  28.410266
+## [295]  55.687102   4.408425   5.334253   5.093373   6.516751   6.546640
+## [301]   6.725679   6.695844   6.677686   6.656502   6.512018   6.675982
+## [307]   6.694992   6.443595   6.440587   6.451477   6.465231   6.463702
+## [313]   6.466962   6.485582   6.475740   6.469280   6.453790   6.487478
+## [319]   6.516600   6.491073   6.491074   6.491018   6.486094   6.468412
+## [325]   6.478414   6.490008   6.490646   6.605316   6.662609   6.699691
+## [331]   6.751602   6.574991
+## 
+## $decimalLongitude
+##   [1] -40.548741 -77.837662  -8.939171  -9.052462  -8.971995 -49.735417
+##   [7]  85.592614  84.359894   5.950000 -48.543333 -90.116234 -90.093285
+##  [13] -77.939690 -77.939680 100.600000 -38.513241 -89.554560 -38.590668
+##  [19]  84.110771  99.949997  -8.776367  -8.792567 -57.657500 -35.915833
+##  [25] -84.101740  30.002975 -57.445278 -73.853951 -73.856756 -73.850968
+##  [31] -73.865840  88.307100 -69.237839 -42.657500 120.416000  -8.759560
+##  [37] -72.550634 -72.135441  76.038300 -27.218290 -40.217222 -71.751355
+##  [43] -71.769165 -38.495637 -38.475795  77.115800 -78.853279 126.864965
+##  [49]  85.666600  85.663073 -42.825833 -81.692340 -81.577900 -81.304400
+##  [55] -81.358380 -81.504640 -38.000000 -76.088000 -75.817000  32.619987
+##  [61] -73.895497 -73.911686 -75.409270 -73.901330 -73.898737 -73.895356
+##  [67] -73.907909 -73.891587 -51.900278 -82.378300 -73.848806 -73.836603
+##  [73] -73.849186 -73.863127 -73.862468 -73.855692 -73.753071 -73.899521
+##  [79] -73.887829 -73.782574 -73.892466 -73.894467  75.966384 -74.495753
+##  [85] -74.038410  76.357940  94.303100 -73.895505 -73.896095 -73.824234
+##  [91] -73.828014 -73.835177 -73.776111 -73.891964 -73.769954 -73.884383
+##  [97] -73.888802 -73.890405 -55.349167 -39.143889  36.212479 -74.129660
+## [103] -74.129690 -74.079660  -8.789613 121.266424 121.270227 121.237730
+## [109] 128.905600 -74.109770 -75.498950   4.950000 -75.729260 127.127600
+## [115] -37.585556 -80.361350 -16.569874 -16.569805  87.866100  87.902700
+## [121]  75.894785 -73.886267 -44.875806 -73.946280 -73.942822 -88.582570
+## [127] -82.157000 -74.202940 -81.688610 -37.096944 120.557320 120.636820
+## [133] -74.143000 -73.711240  -8.688633 -61.564900 -73.891085 -73.895158
+## [139] -73.901236 -73.900980 120.698690 120.946410 121.037101 121.092741
+## [145] 121.024600   5.312230 -74.142750  31.770405 -78.789670 -38.889558
+## [151] 121.502085 121.496143 121.440613 121.348019 -74.251710 -74.156690
+## [157] -78.790590 -78.789760 -78.789630 -78.789380 -78.789010 -78.788160
+## [163] -78.788310  -8.650288 -73.947778  36.225893  30.651070 -16.696987
+## [169] -73.918753 -73.949494 -74.074000 -72.685840 -72.686420 -72.687620
+## [175] -72.742420 -72.741980 128.933965 -83.171270 -70.046134 -70.037151
+## [181] -73.808086 -73.808142 -89.860050 -73.863904  -0.031917 -73.914583
+## [187] -74.712402  36.226104 -67.848457 -67.855881 -67.484703 -16.703304
+## [193]  81.231590 -73.855783 -73.895802 -73.839887 -73.770476  32.861382
+## [199] 108.450256 107.362518 128.428497  86.746593 -45.070194  33.089100
+## [205]  94.299286 -49.664444   5.350000 120.565480 120.705100 -72.675077
+## [211] -74.818150 -74.689945 -78.902530  55.500000  55.501240  55.500150
+## [217]  76.256602  76.253257 -78.970730 -80.118780 -74.127570 -80.118610
+## [223]  44.333000  76.667260  76.263127  76.663981 126.998037 -97.970847
+## [229]  76.846928  76.921443 -38.933889 -72.739495 -72.686491 -83.203720
+## [235] -94.102300  -6.971512  -6.988179  55.322250  -8.526971 -39.819444
+## [241] -51.401197  25.843560  81.265469 -79.544340   5.853169   5.885041
+## [247] 107.269714   5.840734   5.726581  -8.744440 -61.527520 -74.659470
+## [253]  -8.576956   6.216820   6.224400   6.225000   6.226690   6.239220
+## [259]   5.857818   5.891822  75.848495 127.233611   5.646932   5.818926
+## [265]   5.880750  30.046730  29.797350  30.003510  29.896610  30.430090
+## [271]  30.415260  30.019530  30.261810  30.619060 -89.248260   5.623114
+## [277]   5.693401   5.890169   5.550000  -9.157536  -8.208373  94.283340
+## [283]   5.860677   5.704481   5.735113   5.850000  85.448282  -8.512198
+## [289]  -8.800808  -8.645364 -44.620861   5.651251   5.771902 -16.547256
+## [295]  37.629303 -72.646935   5.479121   5.716477   2.428276   2.405273
+## [301]   2.385289   2.354733   2.383830   2.421896   2.405316   2.405545
+## [307]   2.411038   2.656076   2.660982   2.647470   2.627480   2.641730
+## [313]   2.620354   2.420165   2.593572   2.608539   2.620124   2.557318
+## [319]   2.533300   2.555020   2.555050   2.555061   2.408063   2.547547
+## [325]   2.546649   2.548230   2.550005   2.487121   2.471843   2.476907
+## [331]   2.475105   2.397420
+## 
+## $issues
+##  [1] &quot;inmano&quot;                                          
+##  [2] &quot;cdc,cdround,gass84&quot;                              
+##  [3] &quot;&quot;                                                
+##  [4] &quot;cdc,incomis,inmafu,diffown&quot;                      
+##  [5] &quot;cdc,cdround,cudc,gass84,iddativ&quot;                 
+##  [6] &quot;cdc,cdround,inmano&quot;                              
+##  [7] &quot;cdc&quot;                                             
+##  [8] &quot;gass84&quot;                                          
+##  [9] &quot;cdround,inmano&quot;                                  
+## [10] &quot;cdc,colmano,inmafu&quot;                              
+## [11] &quot;cdc,cdround,gass84,iddativ,rdativ,colmafu,inmafu&quot;
+## [12] &quot;cdc,cdround,gass84,iddativ,inmano&quot;               
+## [13] &quot;gass84,osiic,colmano,inmafu,diffown&quot;             
+## [14] &quot;cdround&quot;                                         
+## [15] &quot;cdc,cudc&quot;                                        
+## [16] &quot;cdc,cudc,gass84,iddativ&quot;                         
+## [17] &quot;cdc,gass84&quot;                                      
+## [18] &quot;cdc,gass84,iddativ,rdativ,colmafu,inmafu&quot;        
+## [19] &quot;cdc,cdround,gass84,iddativ,colmafu,inmafu&quot;       
+## [20] &quot;cdc,gass84,incomis&quot;                              
+## [21] &quot;cdc,inmano&quot;                                      
+## [22] &quot;cdc,colmafu,inmafu&quot;                              
+## [23] &quot;cdc,cdround,gass84,inmafu&quot;                       
+## [24] &quot;cdc,osu&quot;                                         
+## [25] &quot;incomis,inmafu,diffown&quot;                          
+## [26] &quot;cdc,cum&quot;                                         
+## [27] &quot;osiic&quot;                                           
+## [28] &quot;cdc,cdround&quot;                                     
+## [29] &quot;cdround,colmafu,inmafu&quot;                          
+## [30] &quot;cdc,inmafu&quot;                                      
+## [31] &quot;rdativ,colmafu,inmafu,diffown&quot;                   
+## [32] &quot;gass84,rdativ&quot;                                   
+## [33] &quot;cdc,cudc,gass84,txmatfuz&quot;                        
+## [34] &quot;gass84,typstativ&quot;                                
+## 
+## $waterBody
+##  [1] NA                                                                  
+##  [2] &quot;Ciénaga El Llanito&quot;                                                
+##  [3] &quot;Orinoco | Caño Pilón | Río Manacacias&quot;                             
+##  [4] &quot;Orinoco | Jaguey | Río Yucao&quot;                                      
+##  [5] &quot;Cuerpo de agua sin nombre, afluentes directos al río Lebrija medio&quot;
+##  [6] &quot;Afluente río Magdalena, afluentes directos al río Lebrija medio&quot;   
+##  [7] &quot;Ciénaga de Montecristo, afluentes directos al río Lebrija medio&quot;   
+##  [8] &quot;Caño Manatí Blanco, afluentes directos al río Lebrija medio&quot;       
+##  [9] &quot;Caño Covado&quot;                                                       
+## [10] &quot;Ciénaga La Colorada&quot;                                               
+## [11] &quot;Caño Asopepa&quot;                                                      
+## [12] &quot;Caño Negro/Dantas&quot;                                                 
+## [13] &quot;Caño Negro&quot;                                                        
+## [14] &quot;La Gomez&quot;                                                          
+## [15] &quot;Ciénaga El Salado&quot;                                                 
+## [16] &quot;Ciénaga Yarirí&quot;                                                    
+## [17] &quot;Ciénaga de Paredes&quot;                                                
+## [18] &quot;Ciénaga de Montecristo&quot;                                            
+## [19] &quot;Caño Angustias&quot;                                                    
+## [20] &quot;Arroyo El Consejo (Arroyo El Garrapatero)&quot;                         
+## [21] &quot;Ciénaga Colorado&quot;                                                  
+## [22] &quot;Cienaga Paredes&quot;                                                   
+## [23] &quot;Ciénaga Montecristo&quot;                                               
+## [24] &quot;Ciénaga Santa Helena&quot;                                              
+## [25] &quot;Caño El Rosario&quot;                                                   
+## [26] &quot;Caño La Rompida&quot;                                                   
+## [27] &quot;Colector Norte&quot;                                                    
+## [28] &quot;Río Magdalena Isla 6&quot;                                              
+## [29] &quot;Río Magdalena Isla 5&quot;                                              
+## [30] &quot;Río Magdalena Isla 4&quot;                                              
+## [31] &quot;Jaguey&quot;                                                            
+## [32] &quot;Colector Principal&quot;                                                
+## [33] &quot;Caño La Represa&quot;                                                   
+## [34] &quot;Caño Las Cruces o Moncholo&quot;                                        
+## [35] &quot;Quebrada Corredor, afluentes directos al río Lebrija medio&quot;        
+## [36] &quot;Caño San Silvestre&quot;                                                
+## [37] &quot;Río Magdalena&quot;                                                     
+## [38] &quot;Ciénaga La Cira&quot;                                                   
+## [39] &quot;Quebrada Las Marías&quot;                                               
+## [40] &quot;Estereo Capricho&quot;                                                  
+## [41] &quot;Ciénaga Doña Jerónima&quot;                                             
+## [42] &quot;Ciénaga Zárate&quot;                                                    
+## [43] &quot;Orinoco | Río Túa y otros Directos al Meta&quot;                        
+## [44] &quot;Estereo Trinidad&quot;                                                  
+## [45] &quot;Rivère Sô&quot;                                                         
+## [46] &quot;lagune de Porto Novo&quot;                                              
+## [47] &quot;Fleuve Ouémé&quot;                                                      
+## 
+## $basisOfRecord
+## [1] &quot;PRESERVED_SPECIMEN&quot; &quot;HUMAN_OBSERVATION&quot;  &quot;OCCURRENCE&quot;        
+## [4] &quot;MATERIAL_SAMPLE&quot;    &quot;MATERIAL_CITATION&quot; 
+## 
+## $occurrenceStatus
+## [1] &quot;PRESENT&quot;
+## 
+## $rightsHolder
+##  [1] &quot;Herbário Vale do São Francisco&quot;                                                
+##  [2] NA                                                                              
+##  [3] &quot;Stichting Observation International&quot;                                           
+##  [4] &quot;Herbário da Universidade de Caxias do Sul&quot;                                     
+##  [5] &quot;Herbário do Departamento de Botânica da Universidade Federal de Santa Catarina&quot;
+##  [6] &quot;Herbário de Referência do Sertão Nordestino&quot;                                   
+##  [7] &quot;COR&quot;                                                                           
+##  [8] &quot;HERBÁRIO MANUEL DE ARRUDA CÂMARA&quot;                                              
+##  [9] &quot;Missouri Botanical Garden&quot;                                                     
+## [10] &quot;Herbário da Fundação Universidade Federal de Mato Grosso do Sul&quot;               
+## [11] &quot;Nature Mates-Nature Club&quot;                                                      
+## [12] &quot;R&quot;                                                                             
+## [13] &quot;Herbário do Museu Nacional&quot;                                                    
+## [14] &quot;HUENF&quot;                                                                         
+## [15] &quot;Herbario da Universidade Estadual de Feira de Santana&quot;                         
+## [16] &quot;ALCB&quot;                                                                          
+## [17] &quot;HCF&quot;                                                                           
+## [18] &quot;Herbário da Universidade Tecnológica Federal do Paraná Campus Campo Mourão&quot;    
+## [19] &quot;Herbário UFMT&quot;                                                                 
+## [20] &quot;Herbário Caririense Dárdano de Andrade-Lima&quot;                                   
+## [21] &quot;Herbário do Maranhão&quot;                                                          
+## [22] &quot;Herbário da Universidade Federal de Sergipe&quot;                                   
+## [23] &quot;Natuurpunt Studie&quot;                                                             
+## [24] &quot;Herbário Pe. Dr. Raulino Reitz&quot;                                                
+## [25] &quot;CFE – Centro de Ecologia Funcional&quot;                                            
+## [26] &quot;VIES&quot;                                                                          
+## [27] &quot;Herbário Central da Universidade Federal do Espírito Santo VIES&quot;               
+## [28] &quot;Bioclass, School #179, Moscow&quot;                                                 
+## 
+## $datasetName
+##  [1] NA                                                                                                                                   
+##  [2] &quot;HACAM - HERBÁRIO MANUEL DE ARRUDA CÂMARA&quot;                                                                                           
+##  [3] &quot;Tropicos&quot;                                                                                                                           
+##  [4] &quot;PMA_CentralHidroeléctricaSogamoso&quot;                                                                                                  
+##  [5] &quot;Estudio de Impacto Ambiental - EIA para el Área de Desarrollo - AD Golondrina&quot;                                                      
+##  [6] &quot;BioBlitz_Terceira_Vascular Plants&quot;                                                                                                  
+##  [7] &quot;Estudio de Impacto Ambiental área de explotación Dionicio&quot;                                                                          
+##  [8] &quot;Estudio de impacto ambiental para el Proyecto Piloto de Investigación Integral - PPII Platero&quot;                                      
+##  [9] &quot;Estudio de Impacto Ambiental del proyecto de desarrollo Flamencos&quot;                                                                  
+## [10] &quot;Estudio de Impacto Ambiental para la construcción y operación de la línea de flujo belleza – Casacará&quot;                              
+## [11] &quot;Programa de adquisición sísmica Flamencos 3D - Caracterización de fauna silvestre de importancia ecológica y monitoreos en ciénagas&quot;
+## [12] &quot;ICA 25 CASABE PEÑAS BLANCAS 2021&quot;                                                                                                   
+## [13] &quot;Waarnemingen.be - Non-native plant occurrences in Flanders and the Brussels Capital Region, Belgium&quot;                                
+## [14] &quot;Interconexión Cuestecitas – Copey – Fundación 500/220 mil voltios&quot;                                                                  
+## [15] &quot;Monitoreo de grupos hidrobiológicos en el Bloque 34&quot;                                                                                
+## [16] &quot;Estudio de Impacto Ambiental, Área de perforación exploratoria LLANOS 87&quot;                                                           
+## [17] &quot;Mapa de Avistamentos de Plantas Invasoras em Portugal&quot;                                                                              
+## [18] &quot;Proyecto Humedales Fase V&quot;                                                                                                          
+## [19] &quot;Collections of Bioclass, School #179, Moscow&quot;                                                                                       
+## 
+## $recordedBy
+##   [1] &quot;L.F.C. Oliveira-Filho&quot;                                                                                  
+##   [2] &quot;-466840105&quot;                                                                                             
+##   [3] &quot;User 4473&quot;                                                                                              
+##   [4] &quot;User 11292&quot;                                                                                             
+##   [5] &quot;User 3616&quot;                                                                                              
+##   [6] &quot;Gonzatti, F; Peruchin, LL; Vieira, FS; Suazo, D&quot;                                                        
+##   [7] &quot;Aanisha Satapathy&quot;                                                                                      
+##   [8] &quot;408793982&quot;                                                                                              
+##   [9] &quot;User 58335&quot;                                                                                             
+##  [10] &quot;Boisson, P.M.; Azevedo, G.P.R.&quot;                                                                         
+##  [11] &quot;-1331584611&quot;                                                                                            
+##  [12] NA                                                                                                       
+##  [13] &quot;Linda Wong&quot;                                                                                             
+##  [14] &quot;S.S. Matos; L.S. Lima&quot;                                                                                  
+##  [15] &quot;Calles,A. &amp; Erazo,B.|Calles,A. &amp; Erazo,B. s.n. [JBL08819] [2024-10-29]&quot;                                 
+##  [16] &quot;Y.O. Alencar; J.R. Silva&quot;                                                                               
+##  [17] &quot;-542876060&quot;                                                                                             
+##  [18] &quot;1042280071&quot;                                                                                             
+##  [19] &quot;User 114353&quot;                                                                                            
+##  [20] &quot;User 112911&quot;                                                                                            
+##  [21] &quot;Leite, A.A.S.&quot;                                                                                          
+##  [22] &quot;Rodrigues, M.M.; Rocha, B.F.; Luz, G.A.; Firmo, M.V.M.F&quot;                                                
+##  [23] &quot;Barry E. Hammel|Isabel Pérez|Willow Zuchowski|William A. Haber|K. Arras&quot;                                
+##  [24] &quot;794562383&quot;                                                                                              
+##  [25] &quot;D. Guerra Franco; Maxwell Oliveira&quot;                                                                     
+##  [26] &quot;Ana Lucia Estrada Posada|Silvia Lucía Villabona-González|Samuel Carvajal-Toro|José Andrés Posada García&quot;
+##  [27] &quot;-1611384388&quot;                                                                                            
+##  [28] &quot;Machado, D.N.S.&quot;                                                                                        
+##  [29] &quot;農業部生物多樣性研究所&quot;                                                                                 
+##  [30] &quot;-1488820879&quot;                                                                                            
+##  [31] &quot;MCS Consultoría y Monitoreo Ambiental S.A.S.&quot;                                                           
+##  [32] &quot;SONU KUMAR&quot;                                                                                             
+##  [33] &quot;Susana Gonçalves|Paulo J.M. Barcelos|et al.&quot;                                                            
+##  [34] &quot;I. P. G. Fernandes;J. P. de Assis, L. P. Costa,L. S. M.Carvalho, L. F. Brazil&quot;                          
+##  [35] &quot;D.S. Silva; Y.O. Alencar&quot;                                                                               
+##  [36] &quot;Ajit Kumar&quot;                                                                                             
+##  [37] &quot;177731058&quot;                                                                                              
+##  [38] &quot;Bikash Kumar Sahoo&quot;                                                                                     
+##  [39] &quot;Lira, M.M.&quot;                                                                                             
+##  [40] &quot;Guedes, ML;et al.,Alves, IL,Santana, JVO&quot;                                                               
+##  [41] &quot;Lisbet Gonzalez-Oliva&quot;                                                                                  
+##  [42] &quot;User 102691&quot;                                                                                            
+##  [43] &quot;Andrés Valencia&quot;                                                                                        
+##  [44] &quot;E.L. Siqueira B.G. Manoel;L.A. Troi&quot;                                                                    
+##  [45] &quot;A. Crnjac, K.S. Alavarado&quot;                                                                              
+##  [46] &quot;SGI S.A.S&quot;                                                                                              
+##  [47] &quot;E.L. Siqueira&quot;                                                                                          
+##  [48] &quot;Nédiker González&quot;                                                                                       
+##  [49] &quot;Alejandro Villarreal&quot;                                                                                   
+##  [50] &quot;Anish Nellickal®&quot;                                                                                       
+##  [51] &quot;Mireya Patricia Córdoba Sánchez|Sandra Milena Sierra Vega&quot;                                              
+##  [52] &quot;Ria Sojan&quot;                                                                                              
+##  [53] &quot;Sunil Kr Borah&quot;                                                                                         
+##  [54] &quot;Ambienciq Ingenieros S.A.S.&quot;                                                                            
+##  [55] &quot;Moraes, A.J.F.; Pensonato, A.&quot;                                                                          
+##  [56] &quot;Silva, J.R.; Silva, J.F.E.; Sampaio, V.S.&quot;                                                              
+##  [57] &quot;Viter S. G.&quot;                                                                                            
+##  [58] &quot;User 11573&quot;                                                                                             
+##  [59] &quot;禹安工程顧問股份有限公司&quot;                                                                               
+##  [60] &quot;User 52361&quot;                                                                                             
+##  [61] &quot;Guedes, ML;Estagiários,Alunos da Disciplina BIOC05 2022.2&quot;                                              
+##  [62] &quot;User 18559&quot;                                                                                             
+##  [63] &quot;Shishupala S&quot;                                                                                           
+##  [64] &quot;AROUCHE, M.&quot;                                                                                            
+##  [65] &quot;Matthew Dunning; Allister Rutledge&quot;                                                                     
+##  [66] &quot;K. S. Alvarado&quot;                                                                                         
+##  [67] &quot;Moura, CS&quot;                                                                                              
+##  [68] &quot;社團法人台灣自然研究學會&quot;                                                                               
+##  [69] &quot;User 372776&quot;                                                                                            
+##  [70] &quot;LESPONNE Céline|DELANNAY Evens&quot;                                                                         
+##  [71] &quot;逢甲大學水利發展中心&quot;                                                                                   
+##  [72] &quot;Camilo Calderón&quot;                                                                                        
+##  [73] &quot;User 155822&quot;                                                                                            
+##  [74] &quot;Тімошенкова В. В.&quot;                                                                                      
+##  [75] &quot;Триліс В. В.|Савицький О. Л.&quot;                                                                           
+##  [76] &quot;Galán,P. et al. 5923 [PG-05923]|Galán,P., Campos,S. &amp; Castillo,O.&quot;                                      
+##  [77] &quot;José Aguilar-Cano|Aura Robles&quot;                                                                          
+##  [78] &quot;User 117&quot;                                                                                               
+##  [79] &quot;José Aguilar-Cano|Jeniffer Díaz&quot;                                                                        
+##  [80] &quot;Сідоровський С. А.&quot;                                                                                     
+##  [81] &quot;User 80353&quot;                                                                                             
+##  [82] &quot;User 78239&quot;                                                                                             
+##  [83] &quot;User 47874&quot;                                                                                             
+##  [84] &quot;Ambienciq Ingenieros S.A.S&quot;                                                                             
+##  [85] &quot;User 5627&quot;                                                                                              
+##  [86] &quot;User 132841&quot;                                                                                            
+##  [87] &quot;1665984680&quot;                                                                                             
+##  [88] &quot;Sandhyarani Bindhani&quot;                                                                                   
+##  [89] &quot;Renato Colares; Bruna &amp; Vanessa&quot;                                                                        
+##  [90] &quot;User 94611&quot;                                                                                             
+##  [91] &quot;Bibiana Molina|Marcela Muñoz|Yorleny Mercado&quot;                                                           
+##  [92] &quot;Henriette, Elvina|Patricia Atienza Gonzalez&quot;                                                            
+##  [93] &quot;Muhsina Mahamood&quot;                                                                                       
+##  [94] &quot;Nimitha C N.&quot;                                                                                           
+##  [95] &quot;Ramirasoa, E.G.|Ramon, L.|Elahimanoro&quot;                                                                  
+##  [96] &quot;Greeshma.M&quot;                                                                                             
+##  [97] &quot;Thomas Vattakaven&quot;                                                                                      
+##  [98] &quot;Johnette Janecka; Alan Lievens, Mark Gustafson and the Biodiversity class at Texas Lutheran University.&quot;
+##  [99] &quot;Annapoorna J M&quot;                                                                                         
+## [100] &quot;Krishna chaitanya&quot;                                                                                      
+## [101] &quot;Lima, G.M.V.&quot;                                                                                           
+## [102] &quot;Esmaragdo Herrera&quot;                                                                                      
+## [103] &quot;User 4013&quot;                                                                                              
+## [104] &quot;Christopher D. Tyrrell|Jessica M. Orlofske&quot;                                                             
+## [105] &quot;User 818680&quot;                                                                                            
+## [106] &quot;JUILLET Nicolas (Régie de la Réserve nationale naturelle de l&#39;étang de Saint-Paul)&quot;                     
+## [107] &quot;Sabrina Carvalho&quot;                                                                                       
+## [108] &quot;Miranda, V.S.;Sossai, B.G.,Nepomuceno, A.,Nichio-Amaral, R.&quot;                                            
+## [109] &quot;Dani, JG&quot;                                                                                               
+## [110] &quot;Miranda, V.S.; Nepomuceno, A.; Nichio-Amaral, R.; Sossai, B.G.&quot;                                         
+## [111] &quot;User 71973&quot;                                                                                             
+## [112] &quot;User 16277&quot;                                                                                             
+## [113] &quot;User 87403&quot;                                                                                             
+## [114] &quot;User 14227&quot;                                                                                             
+## [115] &quot;Akomaye, Ferdinand&quot;                                                                                     
+## [116] &quot;Miguel Rodrigues&quot;                                                                                       
+## [117] &quot;LESPONNE Céline&quot;                                                                                        
+## [118] &quot;Daniel Ramírez Cottes&quot;                                                                                  
+## [119] &quot;Akomaye F.&quot;                                                                                             
+## [120] &quot;Lakshmikant Neve&quot;                                                                                       
+## [121] &quot;Narcisse Uwitonze&quot;                                                                                      
+## [122] &quot;Galán,P. &amp; Molina,C.A. 5103 [PG-05103]|Galán,P. &amp; Molina,C.A.&quot;                                          
+## [123] &quot;User 103650&quot;                                                                                            
+## [124] &quot;Maria Duarte&quot;                                                                                           
+## [125] &quot;Phalee Biodiversity Management Committee&quot;                                                               
+## [126] &quot;User 3374&quot;                                                                                              
+## [127] &quot;User 123744&quot;                                                                                            
+## [128] &quot;Cristina Morais&quot;                                                                                        
+## [129] &quot;Alberto Santos&quot;                                                                                         
+## [130] &quot;User 112805&quot;                                                                                            
+## [131] &quot;Лапин А.А.&quot;                                                                                             
+## [132] &quot;Aphrodite OGOUVIDE&quot;                                                                                     
+## 
+## $depth
+##  [1]    NA 1.000 1.200 0.500 0.300 0.850 0.000 0.555 1.750 1.150 0.750 0.900
+## [13] 1.500 1.600 2.000 2.100 0.400
+## 
+## $locality
+##   [1] &quot;Universidade Federal do Vale do São Francisco (UNIVASF), Campus Ciências Agrárias (CCA), no lago do CRAD&quot;                           
+##   [2] &quot;Black River Lower Morass&quot;                                                                                                           
+##   [3] &quot;Alcochete&quot;                                                                                                                          
+##   [4] &quot;Póvoa de Santa Iria&quot;                                                                                                                
+##   [5] &quot;Parque da Guarita, Torre Sul e Torre do Meio, nos afloramentos rochosos basálticos&quot;                                                 
+##   [6] NA                                                                                                                                   
+##   [7] &quot;Chitwan Nationalpark&quot;                                                                                                               
+##   [8] &quot;Emst - Kievitsveld&quot;                                                                                                                 
+##   [9] &quot;ambiente aquático da foz do rio.&quot;                                                                                                   
+##  [10] &quot;Barataria Preserve&quot;                                                                                                                 
+##  [11] &quot;City Park New Orleans: Couturie Forest und Scout Island&quot;                                                                            
+##  [12] &quot;[No locality description provided]&quot;                                                                                                 
+##  [13] &quot;Chao Phraya River&quot;                                                                                                                  
+##  [14] &quot;Próximo a estrada vicinal&quot;                                                                                                          
+##  [15] &quot;Depto. Santa Ana, Mpio. Metapán, Ctón. San Jerónimo, Crío. Ostúa, Hacienda 3 Puentes, El Pocito&quot;                                    
+##  [16] &quot;À beira do açude - Localidade de Riacho da Lagoa - QI12 - P5&quot;                                                                       
+##  [17] &quot;Begnas Lake Resort&quot;                                                                                                                 
+##  [18] &quot;Hua Hin, Ortslage, Strand und Umgebung&quot;                                                                                             
+##  [19] &quot;Gafanha da Boa Hora&quot;                                                                                                                
+##  [20] &quot;Barrinha de Mira - Estação da Biodiversidade&quot;                                                                                       
+##  [21] &quot;A coleta foi realizada nas margens do rio Paraguai, próximo à Captação de água de Corumbá&quot;                                          
+##  [22] &quot;Parque de Bodocongó.&quot;                                                                                                               
+##  [23] &quot;Faldas de Volcán Barva por Porrosatí, entre Río Ciruelas y Río Porrosatí, vecindad del Vivero Selva Negra.&quot;                         
+##  [24] &quot;Kazinga-Kanal West&quot;                                                                                                                 
+##  [25] &quot;Pantanal, sub-região do Paraguai. Às margens do Rio Paraguai.&quot;                                                                      
+##  [26] &quot;Ciénaga El Llanito&quot;                                                                                                                 
+##  [27] &quot;Dumurjala&quot;                                                                                                                          
+##  [28] &quot;UTM50_19Q_0450_2100&quot;                                                                                                                
+##  [29] &quot;Divisa dos Municípios de Maricá e Saquarema, Jaconé, confluência da Avenida do Canal e Avenida 2.&quot;                                  
+##  [30] &quot;Port32: Reiherkolonie Tejo (Valada)&quot;                                                                                                
+##  [31] &quot;Serranía&quot;                                                                                                                           
+##  [32] &quot;Carubare&quot;                                                                                                                           
+##  [33] &quot;Jardim Duque da Terceira&quot;                                                                                                           
+##  [34] &quot;Lagoa Juara.&quot;                                                                                                                       
+##  [35] &quot;Cabecera municipal Hato Corozal&quot;                                                                                                    
+##  [36] &quot;Vereda El Cedral&quot;                                                                                                                   
+##  [37] &quot;Beira da barragem&quot;                                                                                                                  
+##  [38] &quot;Açude&quot;                                                                                                                              
+##  [39] &quot;Mashpi Amagusa&quot;                                                                                                                     
+##  [40] &quot;Impi-myeon&quot;                                                                                                                         
+##  [41] &quot;Estrada para o povoado Alto do Curralinho&quot;                                                                                          
+##  [42] &quot;W.P. Franklin Lock on Caloosahatchee River&quot;                                                                                         
+##  [43] &quot;Creek at North River Rd&quot;                                                                                                            
+##  [44] &quot;Ortona Lock on Caloosahatchee River&quot;                                                                                                
+##  [45] &quot;Cowboy Way Canal at SR80&quot;                                                                                                           
+##  [46] &quot;Roberts Canal at SR80&quot;                                                                                                              
+##  [47] &quot;Sempre Viva, Margem do Rio Crumaí&quot;                                                                                                  
+##  [48] &quot;Embalse Gilbert&quot;                                                                                                                    
+##  [49] &quot;Embalse Chalons&quot;                                                                                                                    
+##  [50] &quot;Luxor&quot;                                                                                                                              
+##  [51] &quot;Vereda Terraplen&quot;                                                                                                                   
+##  [52] &quot;Promigás campo Mamonal Paiva, Zona Pantanosa 1&quot;                                                                                     
+##  [53] &quot;Vereda El Centro&quot;                                                                                                                   
+##  [54] &quot;Vereda Bocas de Sogamoso&quot;                                                                                                           
+##  [55] &quot;University of South Florida Riverfront Park; E-facing side of Hillsborough River opposite the kayak/boat ramp at Lettuce Lake Park.&quot;
+##  [56] &quot;Caño Coba&quot;                                                                                                                          
+##  [57] &quot;Ciénaga&quot;                                                                                                                            
+##  [58] &quot;Italia&quot;                                                                                                                             
+##  [59] &quot;Estação Ecológica Municipal Dr. Orlando&quot;                                                                                            
+##  [60] &quot;La Esmeralda&quot;                                                                                                                       
+##  [61] &quot;Yariri, Finca la Esmeralda&quot;                                                                                                         
+##  [62] &quot;Campo Duro&quot;                                                                                                                         
+##  [63] &quot;Terraplen&quot;                                                                                                                          
+##  [64] &quot;El centro&quot;                                                                                                                          
+##  [65] &quot;Montecristo&quot;                                                                                                                        
+##  [66] &quot;El Tres&quot;                                                                                                                            
+##  [67] &quot;Reserva Distrital de Humedales de Torca y Guaymaral&quot;                                                                                
+##  [68] &quot;Centro&quot;                                                                                                                             
+##  [69] &quot;Coleta realizada no reservatório da UHE Colíder, no trecho intermediário do reservatório.&quot;                                          
+##  [70] &quot;Geossítio Cachoeira de Missão Velha, Cariri&quot;                                                                                        
+##  [71] &quot;Reserva Distrital de Humedal de Jaboque&quot;                                                                                            
+##  [72] &quot;Praia de Mira&quot;                                                                                                                      
+##  [73] &quot;池豐大橋&quot;                                                                                                                           
+##  [74] &quot;崙天大橋&quot;                                                                                                                           
+##  [75] &quot;學田橋&quot;                                                                                                                             
+##  [76] &quot;Chodang-dong&quot;                                                                                                                       
+##  [77] &quot;Reserva Distrital de Humedal de Juan Amarillo o Tibabuyes&quot;                                                                          
+##  [78] &quot;Amsterdam - De Hoge Dijk&quot;                                                                                                           
+##  [79] &quot;Jungwon-gu&quot;                                                                                                                         
+##  [80] &quot;BA233, próximo ao Sítio do Conde. Margem de área úmida.&quot;                                                                            
+##  [81] &quot;West Coast&quot;                                                                                                                         
+##  [82] &quot;Kanai Chatta, Deshopran&quot;                                                                                                            
+##  [83] &quot;Nijkashba, Khejuri II&quot;                                                                                                              
+##  [84] &quot;Río Magdalena, El Puerto&quot;                                                                                                           
+##  [85] &quot;Campo do Rio Aurá&quot;                                                                                                                  
+##  [86] &quot;Agria, San Miguel Del Tigre&quot;                                                                                                        
+##  [87] &quot;Caño Largo, San Miguel Del Tigre&quot;                                                                                                   
+##  [88] &quot;Pascagoula River&quot;                                                                                                                   
+##  [89] &quot;Blackwater Creek Nature Preserve, Patrinostro Road of FL 39, Plant City.&quot;                                                           
+##  [90] &quot;Reserva Distrital de Humedal de Tibanica&quot;                                                                                           
+##  [91] &quot;Catfish Creek&quot;                                                                                                                      
+##  [92] &quot;São Cristóvão, As margens do rio Poxim.&quot;                                                                                            
+##  [93] &quot;中山高橋下&quot;                                                                                                                         
+##  [94] &quot;貓羅溪與隘寮溪排水匯流口&quot;                                                                                                           
+##  [95] &quot;Reserva Distrital de Humedal de Techo&quot;                                                                                              
+##  [96] &quot;Pine Pond&quot;                                                                                                                          
+##  [97] &quot;Vigo&quot;                                                                                                                               
+##  [98] &quot;Finca La Orqueta&quot;                                                                                                                   
+##  [99] &quot;Isla 6&quot;                                                                                                                             
+## [100] &quot;Isla 5&quot;                                                                                                                             
+## [101] &quot;Isla 4&quot;                                                                                                                             
+## [102] &quot;內新橋&quot;                                                                                                                             
+## [103] &quot;新庄里&quot;                                                                                                                             
+## [104] &quot;隆恩堰&quot;                                                                                                                             
+## [105] &quot;竹林大橋&quot;                                                                                                                           
+## [106] &quot;員新橋&quot;                                                                                                                             
+## [107] &quot;Reserva Distrital de Humedal Complejo de Humedales El Tunjo&quot;                                                                        
+## [108] &quot;Murchison Falls N.P. NORD, Uganda&quot;                                                                                                  
+## [109] &quot;Reservatório Porcos - Eixo Norte&quot;                                                                                                   
+## [110] &quot;河口左岸&quot;                                                                                                                           
+## [111] &quot;河口右岸&quot;                                                                                                                           
+## [112] &quot;原山奇美橋&quot;                                                                                                                         
+## [113] &quot;高寮大橋&quot;                                                                                                                           
+## [114] &quot;Reserva Distrital de Humedal del Meandro del Say&quot;                                                                                   
+## [115] &quot;Murtosa&quot;                                                                                                                            
+## [116] &quot;Colector, San Miguel Del Tigre&quot;                                                                                                     
+## [117] &quot;Kotu und Fajara Area, The Gambia&quot;                                                                                                   
+## [118] &quot;La Represa&quot;                                                                                                                         
+## [119] &quot;El Miedo, Laguna Del Miedo&quot;                                                                                                         
+## [120] &quot;Área de influencia del proyecto, Corregimiento Estación Algarrobo&quot;                                                                  
+## [121] &quot;Área de influencia del proyecto, Área sin vereda Hatonuevo&quot;                                                                         
+## [122] &quot;Daejeo 2-dong&quot;                                                                                                                      
+## [123] &quot;Lake Oconee&quot;                                                                                                                        
+## [124] &quot;Aruba; Bubali plas&quot;                                                                                                                 
+## [125] &quot;Aruba&quot;                                                                                                                              
+## [126] &quot;Vereda El Pedral&quot;                                                                                                                   
+## [127] &quot;Depto. Ahuachapán, Mpio. Ahuachapán, Ctón. Llano La Laguna, Laguna El Espino, contiguo a restaurante Brisas de Santa Mónica.&quot;       
+## [128] &quot;Recorrido entre punto P6 y P4&quot;                                                                                                      
+## [129] &quot;Tema&quot;                                                                                                                               
+## [130] &quot;P13B&quot;                                                                                                                               
+## [131] &quot;Feuchtgebiet östlich des Rio Magdalena, südlich der Straße 90&quot;                                                                      
+## [132] &quot;Vichada&quot;                                                                                                                            
+## [133] &quot;D. Atures&quot;                                                                                                                          
+## [134] &quot;Kotu Sewage ponds&quot;                                                                                                                  
+## [135] &quot;Thissamaharama&quot;                                                                                                                     
+## [136] &quot;Caño San Silvestre&quot;                                                                                                                 
+## [137] &quot;Rio Magdalena Aguas Abajo del vertimiento&quot;                                                                                          
+## [138] &quot;Ciénaga La Cira Oriente&quot;                                                                                                            
+## [139] &quot;Quebrada Las Marías&quot;                                                                                                                
+## [140] &quot;Kom Ombo-Aswan&quot;                                                                                                                     
+## [141] &quot;Dalat Flower Park&quot;                                                                                                                  
+## [142] &quot;Cat Tien Nationalpark&quot;                                                                                                              
+## [143] &quot;Rio Pericumã&quot;                                                                                                                       
+## [144] &quot;The Heaven River Lodge (Jinja)&quot;                                                                                                     
+## [145] &quot;Amersfoort - Loes van Overeemlaan / Hoge Kleyweg&quot;                                                                                   
+## [146] &quot;Piñalito&quot;                                                                                                                           
+## [147] &quot;Zona rural dispersa&quot;                                                                                                                
+## [148] &quot;Ciénaga Zárate&quot;                                                                                                                     
+## [149] &quot;Anse Intendance&quot;                                                                                                                    
+## [150] &quot;Niagara River&quot;                                                                                                                      
+## [151] &quot;Lake Erie,Lake Erie (ERIE)&quot;                                                                                                         
+## [152] &quot;Little Long Pond&quot;                                                                                                                   
+## [153] &quot;Korea&quot;                                                                                                                              
+## [154] &quot;Max Starcke Park.&quot;                                                                                                                  
+## [155] &quot;Localizado à beira da &amp;nf;BA 400 próxima a linha de &amp;nf;trem.&quot;                                                                      
+## [156] &quot;La Palmira&quot;                                                                                                                         
+## [157] &quot;El Güira&quot;                                                                                                                           
+## [158] &quot;Puntarenas&quot;                                                                                                                         
+## [159] &quot;McFaddin National Wildlife Refuge&quot;                                                                                                  
+## [160] &quot;Azud de Badajoz - N2000&quot;                                                                                                            
+## [161] &quot;Azinhaga &quot;                                                                                                                          
+## [162] &quot;Porto de Regência, ponto 26.&quot;                                                                                                       
+## [163] &quot;Parque Jardim da Lagoa - Desvio Rizzo&quot;                                                                                              
+## [164] &quot;Southern&quot;                                                                                                                           
+## [165] &quot;Panamá&quot;                                                                                                                             
+## [166] &quot;Okpokunou/ Bomadi&quot;                                                                                                                  
+## [167] &quot;Olomu/Ughelli South&quot;                                                                                                                
+## [168] &quot;Tri An-Brücke&quot;                                                                                                                      
+## [169] &quot;Ngbilebiri / Burutu&quot;                                                                                                                
+## [170] &quot;Vila Nova De Cerveira &quot;                                                                                                             
+## [171] &quot;Humedal Corinto&quot;                                                                                                                    
+## [172] &quot;Alpiarça &quot;                                                                                                                          
+## [173] &quot;Emadike&quot;                                                                                                                            
+## [174] &quot;Epebu&quot;                                                                                                                              
+## [175] &quot;Ewema&quot;                                                                                                                              
+## [176] &quot;Okodi&quot;                                                                                                                              
+## [177] &quot;Utuaganagu&quot;                                                                                                                         
+## [178] &quot;Gwangsan-myeon&quot;                                                                                                                     
+## [179] &quot;Torugbene/ Burutu&quot;                                                                                                                  
+## [180] &quot;Udu/Ughelli South&quot;                                                                                                                  
+## [181] &quot;Nyarugenge&quot;                                                                                                                         
+## [182] &quot;Burera&quot;                                                                                                                             
+## [183] &quot;Nyabarongo&quot;                                                                                                                         
+## [184] &quot;Bugesera&quot;                                                                                                                           
+## [185] &quot;Kirehe&quot;                                                                                                                             
+## [186] &quot;Depto. La Libertad, Mpio. Antiguo Cuscatlán, Urb. Industrial Plan de La Laguna, Jardín Botánico La Laguna, Zona 4.&quot;                 
+## [187] &quot;Udu/ Ughelli South&quot;                                                                                                                 
+## [188] &quot;Minnertsga&quot;                                                                                                                         
+## [189] &quot;Alvalade&quot;                                                                                                                           
+## [190] &quot;Mora&quot;                                                                                                                               
+## [191] &quot;Amukpe/Sapele&quot;                                                                                                                      
+## [192] &quot;Oudehaske&quot;                                                                                                                          
+## [193] &quot;Orissa&quot;                                                                                                                             
+## [194] &quot;Travassô e Óis da Ribeira&quot;                                                                                                          
+## [195] &quot;Biscainho&quot;                                                                                                                          
+## [196] &quot;Igarapé Troitá&quot;                                                                                                                     
+## [197] &quot;Tenerife - Puerto de la Cruz&quot;                                                                                                       
+## [198] &quot;Obotete / Burutu&quot;                                                                                                                   
+## [199] &quot;Sô-Ava&quot;                                                                                                                             
+## [200] &quot;Ganvié&quot;                                                                                                                             
+## [201] &quot;Sèmè kpodji&quot;                                                                                                                        
+## [202] &quot;Porto Novo&quot;                                                                                                                         
+## [203] &quot;Aguégué&quot;                                                                                                                            
+## [204] &quot;Adjohoun&quot;                                                                                                                           
+## 
+## $habitat
+##  [1] NA                                                                                                            
+##  [2] &quot;unknown&quot;                                                                                                     
+##  [3] &quot;Caño&quot;                                                                                                        
+##  [4] &quot;Río&quot;                                                                                                         
+##  [5] &quot;Urban garden&quot;                                                                                                
+##  [6] &quot;Cypress [Taxodium] riverfront, riparian zone.&quot;                                                               
+##  [7] &quot;Ciénaga&quot;                                                                                                     
+##  [8] &quot;Lótico&quot;                                                                                                      
+##  [9] &quot;Léntico&quot;                                                                                                     
+## [10] &quot;Jaguey&quot;                                                                                                      
+## [11] &quot;Zonas pantanosas&quot;                                                                                            
+## [12] &quot;river in city&quot;                                                                                               
+## [13] &quot;Cuerpo de agua&quot;                                                                                              
+## [14] &quot;Dried swamp; hydric soil.&quot;                                                                                   
+## [15] &quot;Arbustal denso&quot;                                                                                              
+## [16] &quot;Vegetación secundaria alta&quot;                                                                                  
+## [17] &quot;Arbustal abierto&quot;                                                                                            
+## [18] &quot;Acuática flotante sobre caño&quot;                                                                                
+## [19] &quot;Pastizal en banco de arena a orilla del río Magdalena con comunidad de macrofitas heliofitas, suelo arenoso.&quot;
+## [20] &quot;Estereo&quot;                                                                                                     
+## [21] &quot;wetland&quot;                                                                                                     
+## [22] &quot;Guadalupe River, near the dam.&quot;                                                                              
+## [23] &quot;Estero&quot;                                                                                                      
+## [24] &quot;na água&quot;                                                                                                     
+## [25] &quot;Turbera&quot;                                                                                                     
+## [26] &quot;Река&quot;                                                                                                        
+## [27] &quot;Zone humide&quot;</code></pre>
+</div>
+<div id="checagem-de-coordenadas" class="section level2">
+<h2>6. Checagem de coordenadas</h2>
+<p>Verificação de coordenadas fora da faixa válida.</p>
+<pre class="r"><code>check_pf &lt;- bdc::bdc_coordinates_outOfRange(
+  data = crass_gbif1,
+  lat = &quot;decimalLatitude&quot;,
+  lon = &quot;decimalLongitude&quot;)</code></pre>
+<p>Verificação de coordenadas suspeitas (capitais, centros, zeros
+etc.).</p>
+<pre class="r"><code>cl &lt;- crass_gbif1 %&gt;%
+  CoordinateCleaner::clean_coordinates(
+    species = &quot;acceptedScientificName&quot;,
+    lat = &quot;decimalLatitude&quot;,
+    lon = &quot;decimalLongitude&quot;,
+    tests = c(&quot;capitals&quot;, &quot;centroids&quot;, &quot;equal&quot;, 
+              &quot;gbif&quot;, &quot;institutions&quot;, &quot;outliers&quot;, &quot;zeros&quot;))</code></pre>
+</div>
+<div id="visualização-geográfica" class="section level2">
+<h2>7. Visualização geográfica</h2>
+<p>Mapas das ocorrências com base em coordenadas UTM.</p>
+<pre class="r"><code># Mapa com bordas simples
+ggplot() +
+  borders(&quot;world&quot;, fill = &quot;lightgray&quot;) +
+  geom_point(data = crass_gbif1, aes(x = decimalLongitude, y = decimalLatitude)) +
+  coord_quickmap() +
+  theme_classic()</code></pre>
+<p><img role="img" src="data:image/png;base64,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" width="672" /></p>
+<pre class="r"><code># Mapa com polígonos
+world &lt;- map_data(&quot;world&quot;)
+
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group)) +
+  coord_fixed() +
+  theme_classic() +
+  geom_point(data = crass_gbif1, aes(x = decimalLongitude, y = decimalLatitude), color = &quot;red&quot;) +
+  labs(x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, title = expression(italic(&quot;Eichhornia crassipes&quot;)))</code></pre>
+<p><img role="img" src="data:image/png;base64,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" width="672" /></p>
+</div>
+<div id="considerações" class="section level2">
+<h2>8. Considerações</h2>
+<p>A análise concentrou-se nos dados do GBIF, com foco na validação
+espacial. OBIS não foi considerado neste relatório por se tratar de um
+ambiente aquático específico.</p>
+<hr />
 </div>
 
 

@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 library(dplyr)
+library(tidyverse)
 library(rgbif)
 library(CoordinateCleaner)
 library(bdc)
