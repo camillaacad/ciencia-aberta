@@ -1,0 +1,6 @@
+Atividade: Criando arquivos no sistema eMOF
+Aluna: Camilla Soares da Silva
+Disciplina: Ferramentas em ciência colaborativa e bancos de dados abertos
+UENF - CBB - Laboratório de Ciências Ambientais (LCA)
+Professor: Cesar A. M. M. Cordeiro
+Atividade elaborada a partir das instruções https://cammcordeiro.github.io/ciencia_colab/index.html
