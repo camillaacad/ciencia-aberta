@@ -1,0 +1,171 @@
+---
+title: "Atividade 4 - Análise de Ocorrências - *Eichhornia crassipes*"
+author: "Camilla Soares da Silva"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(dplyr)
+library(tidyverse)
+library(rgbif)
+library(CoordinateCleaner)
+library(bdc)
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(mapdata)
+```
+
+## 1. Obtenção de dados do GBIF
+
+Consulta à função `occ_data` para obtenção de registros com coordenadas e sem problemas geoespaciais.
+
+```{r}
+# Checar a função
+?occ_data
+
+# Baixar ocorrências
+crass_gbif <- occ_data(scientificName = "Eichhornia crassipes", 
+                       hasCoordinate = TRUE,
+                       hasGeospatialIssue = FALSE)
+```
+
+## 2. Estrutura dos dados
+
+Verificação das dimensões e campos disponíveis.
+
+```{r}
+dim(crass_gbif)
+dim(crass_gbif$data)
+names(crass_gbif$data)
+```
+
+## 3. Verificação de problemas reportados
+
+Identificação de problemas associados às ocorrências.
+
+```{r}
+issues_gbif <- crass_gbif$data$issues %>% 
+  unique() %>% 
+  strsplit(., "[,]") %>% 
+  unlist()
+
+gbif_issues() %>% 
+  data.frame() %>% 
+  filter(code %in% issues_gbif)
+```
+
+## 4. Seleção de variáveis úteis
+
+Filtragem das variáveis relevantes para validação.
+
+```{r}
+crass_gbif1 <- crass_gbif$data %>%
+  dplyr::select(scientificName, acceptedScientificName, decimalLatitude, decimalLongitude,
+                issues, waterBody, basisOfRecord, occurrenceStatus, rightsHolder, 
+                datasetName, recordedBy, depth, locality, habitat)
+```
+
+## 5. Validação de dados
+
+Remoção de duplicatas e checagem de níveis únicos.
+
+```{r}
+crass_gbif1 <- crass_gbif1 %>% distinct()
+dim(crass_gbif1)
+lapply(crass_gbif1, unique)
+```
+
+## 6. Checagem de coordenadas
+
+Verificação de coordenadas fora da faixa válida.
+
+```{r}
+check_pf <- bdc::bdc_coordinates_outOfRange(
+  data = crass_gbif1,
+  lat = "decimalLatitude",
+  lon = "decimalLongitude")
+```
+
+Verificação de coordenadas suspeitas (capitais, centros, zeros etc.).
+
+```{r}
+cl <- crass_gbif1 %>%
+  CoordinateCleaner::clean_coordinates(
+    species = "acceptedScientificName",
+    lat = "decimalLatitude",
+    lon = "decimalLongitude",
+    tests = c("capitals", "centroids", "equal", 
+              "gbif", "institutions", "outliers", "zeros"))
+```
+
+## 7. Visualização geográfica
+
+Mapas das ocorrências com base em coordenadas UTM.
+
+```{r}
+# Mapa com bordas simples
+ggplot() +
+  borders("world", fill = "lightgray") +
+  geom_point(data = crass_gbif1, aes(x = decimalLongitude, y = decimalLatitude)) +
+  coord_quickmap() +
+  theme_classic()
+```
+
+```{r}
+# Mapa com polígonos
+world <- map_data("world")
+
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group)) +
+  coord_fixed() +
+  theme_classic() +
+  geom_point(data = crass_gbif1, aes(x = decimalLongitude, y = decimalLatitude), color = "red") +
+  labs(x = "Longitude", y = "Latitude", title = expression(italic("Eichhornia crassipes")))
+```
+
+## 8. Gráfico dinâmico
+
+O mapa interativo permite que o usuário possa investigar com maior detalher os dados apresentados no mapa.
+
+```{r}
+library(tidyverse)
+library(rgbif)
+
+# ocorrencias
+crass_gbif1 <- occ_data(scientificName = "Eichhornia crassipes", 
+                      hasCoordinate = TRUE,
+                      hasGeospatialIssue = FALSE)
+# checar issues
+issues_gbif <- crass_gbif1$data$issues %>% 
+  unique() %>% 
+  strsplit(., "[,]") %>% 
+  unlist()
+
+gbif_issues() %>% 
+  data.frame() %>% 
+  filter(code %in% issues_gbif)
+# selecionar variaveis
+crass <- crass_gbif1$data %>%
+  dplyr::select(scientificName, decimalLatitude, decimalLongitude) %>% 
+  distinct()
+
+library(leaflet)
+
+# conferir no mapa
+crass %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~decimalLongitude,
+             ~decimalLatitude)
+
+
+```
+
+## 9. Considerações
+
+A análise concentrou-se nos dados do GBIF, com foco na validação espacial. OBIS não foi considerado neste relatório por se tratar de um ambiente aquático oceânico.
+
+---
