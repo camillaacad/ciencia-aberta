@@ -147,6 +147,21 @@ issues_gbif <- crass_gbif1$data$issues %>%
 gbif_issues() %>% 
   data.frame() %>% 
   filter(code %in% issues_gbif)
+# selecionar variaveis
+crass <- crass_gbif1$data %>%
+  dplyr::select(scientificName, decimalLatitude, decimalLongitude) %>% 
+  distinct()
+
+library(leaflet)
+
+# conferir no mapa
+crass %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~decimalLongitude,
+             ~decimalLatitude)
+
+
 ```
 
 ## 9. Considerações
